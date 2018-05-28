@@ -1,0 +1,14 @@
+---
+title: "272R_Project_Data_Clean"
+author: "John Stayner"
+date: "5/24/2018"
+output: 
+  github_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
