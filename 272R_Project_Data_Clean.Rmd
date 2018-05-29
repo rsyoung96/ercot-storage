@@ -12,3 +12,44 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+```{r}
+# Import
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+
+# Strings for data
+foldername <- "~/Documents/Homework/CEE272R/Project/Data/"
+
+path_loads <- foldername %>% str_c("ERCOT Backcasted Load Profiles 2017.xlsx")
+
+```
+
+
+## First step is to clean up the historical loads for 2017:
+
+```{r}
+loads_q1 <- read_excel(path_loads, sheet = "Q1_2017")
+loads_q2 <- read_excel(path_loads, sheet = "Q2_2017")
+loads_q3 <- read_excel(path_loads, sheet = "Q3_2017")
+loads_q4 <- read_excel(path_loads, sheet = "Q4_2017")
+
+loads <- bind_rows(loads_q1, loads_q2, loads_q3, loads_q4)
+zonal_load <-
+  loads %>%
+  separate(PType_WZ, into = c("profile_type", "weather_zone"), sep = "_") %>%
+  group_by(weather_zone, Date) %>%
+  summarize_if(is.double, sum)
+
+zonal_load %>%
+  gather(contains("int"), key = timestep, value = load) %>%
+  filter(!is.na(load), year(Date) == 2017) %>%
+  separate(timestep, into = c("trash", "timestep"), sep = "h", convert = TRUE) %>%
+  mutate(hr = (timestep - 1) %/% 4) %>%
+  count(weather_zone, Date, hr, wt = load) %>%
+  spread(key = weather_zone, value = n) %>%
+  select(-Date, -hr)
+
+```
+
