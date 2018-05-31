@@ -24,6 +24,8 @@ foldername <- "~/Documents/Homework/CEE272R/Project/Data/"
 
 path_loads <- foldername %>% str_c("ERCOT Backcasted Load Profiles 2017.xlsx")
 
+path_save <- foldername %>% str_c("load_profiles_processed.csv")
+
 ```
 
 
@@ -49,7 +51,8 @@ zonal_load %>%
   mutate(hr = (timestep - 1) %/% 4) %>%
   count(weather_zone, Date, hr, wt = load) %>%
   spread(key = weather_zone, value = n) %>%
-  select(-Date, -hr)
+  #select(-Date, -hr) %>%
+  write_csv(path_save)
 
 ```
 
