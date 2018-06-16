@@ -11,7 +11,7 @@ import numpy as np
 
 
 # %% unzip all files in a folder and rename in a certain way
-# FUCK YEAH THIS WORKS NOW!!
+
 
 
 def unzip_to_folders(relative_path_folder, new_folder_suffix):
